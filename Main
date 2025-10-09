@@ -1,0 +1,123 @@
+import numpy as np
+import random
+
+# ==========================================
+# Parâmetros do Algoritmo Genético
+# ==========================================
+NUM_INDIVIDUOS = 30       # Tamanho da população
+NUM_FEATURES = 45          # Total de atributos do dataset
+MAX_GERACOES = 50          # Critério de parada
+TAXA_CROSSOVER = 0.8
+TAXA_MUTACAO = 0.05
+
+# ==========================================
+# Função de Fitness
+# ==========================================
+def calcular_fitness(individuo, dataset, labels):
+    """
+    Fitness avalia o quão bom é o subconjunto de features.
+    Combina acurácia de classificação e penalidade por número de features.
+    """
+    # Seleciona colunas ativas (genes = 1)
+    indices_ativos = [i for i, bit in enumerate(individuo) if bit == 1]
+    
+    # Caso não selecione nenhuma feature → penalidade alta
+    if len(indices_ativos) == 0:
+        return 9999
+
+    # (Exemplo: simula acurácia; em prática, treina um classificador como RandomForest)
+    acuracia_simulada = 0.90 + random.uniform(-0.05, 0.05)
+
+    # Penalidade por usar muitas features (quanto menos, melhor)
+    proporcao_usada = len(indices_ativos) / NUM_FEATURES
+    penalidade = proporcao_usada * 0.5  # peso da penalização
+    
+    # Quanto menor o valor, melhor
+    fitness = 1 - acuracia_simulada + penalidade
+    return fitness
+
+# ==========================================
+# Inicialização da população
+# ==========================================
+def inicializar_populacao():
+    """
+    Cada indivíduo é um vetor binário de tamanho NUM_FEATURES.
+    1 = feature selecionada | 0 = feature descartada
+    """
+    populacao = np.random.randint(0, 2, (NUM_INDIVIDUOS, NUM_FEATURES))
+    return populacao
+
+# ==========================================
+# Seleção de pais (Torneio)
+# ==========================================
+def selecionar_pais(populacao, fitness):
+    i1, i2 = random.sample(range(len(populacao)), 2)
+    return populacao[i1] if fitness[i1] < fitness[i2] else populacao[i2]
+
+# ==========================================
+# Crossover (Troca de genes)
+# ==========================================
+def crossover(pai1, pai2):
+    """
+    Crossover de um ponto ou uniforme.
+    Aqui usamos crossover uniforme (mais comum em vetores binários).
+    """
+    filho = np.array([pai1[i] if random.random() < 0.5 else pai2[i] for i in range(NUM_FEATURES)])
+    return filho
+
+# ==========================================
+# Mutação
+# ==========================================
+def mutacao(individuo):
+    """
+    Inverte alguns bits aleatoriamente com pequena probabilidade.
+    """
+    for i in range(NUM_FEATURES):
+        if random.random() < TAXA_MUTACAO:
+            individuo[i] = 1 - individuo[i]  # inverte bit
+    return individuo
+
+# ==========================================
+# Algoritmo Genético
+# ==========================================
+def algoritmo_genetico(dataset, labels):
+    populacao = inicializar_populacao()
+
+    for geracao in range(MAX_GERACOES):
+        fitness = np.array([calcular_fitness(ind, dataset, labels) for ind in populacao])
+
+        nova_populacao = []
+        while len(nova_populacao) < NUM_INDIVIDUOS:
+            pai1 = selecionar_pais(populacao, fitness)
+            pai2 = selecionar_pais(populacao, fitness)
+            
+            # Crossover com probabilidade definida
+            if random.random() < TAXA_CROSSOVER:
+                filho = crossover(pai1, pai2)
+            else:
+                filho = np.copy(pai1)
+            
+            filho = mutacao(filho)
+            nova_populacao.append(filho)
+
+        populacao = np.array(nova_populacao)
+    
+    # Escolher melhor indivíduo da geração final
+    fitness_final = np.array([calcular_fitness(ind, dataset, labels) for ind in populacao])
+    melhor_idx = np.argmin(fitness_final)
+    melhor_individuo = populacao[melhor_idx]
+    
+    return melhor_individuo, fitness_final[melhor_idx]
+
+# ==========================================
+# Execução simulada
+# ==========================================
+# (No artigo real, 'dataset' seria UNSW-NB15, Bot-IoT, etc.)
+dataset_simulado = np.random.rand(100, NUM_FEATURES)
+labels_simulados = np.random.randint(0, 2, 100)
+
+melhor_solucao, melhor_fitness = algoritmo_genetico(dataset_simulado, labels_simulados)
+
+print("Melhor subconjunto de features:", melhor_solucao)
+print("Número de features selecionadas:", sum(melhor_solucao))
+print("Fitness final:", melhor_fitness)
