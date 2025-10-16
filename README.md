@@ -1,8 +1,3 @@
-# Seleção de Features com Algoritmo Genético
-
-![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)
-![Numpy](https://img.shields.io/badge/Numpy-1.21%2B-orange.svg)
-
 ## 📝 Descrição do Projeto
 
 Este projeto é uma implementação em Python de um **Algoritmo Genético (AG)**, uma meta-heurística de otimização inspirada na teoria da evolução de Charles Darwin. O código é uma demonstração prática dos conceitos apresentados em pesquisas sobre o tema, como o artigo *"[A systematic literature review of the Genetic Algorithm based Feature Selection for machine learning](https://www.sciencedirect.com/science/article/abs/pii/S0167404821002728)"*.
@@ -37,8 +32,8 @@ O projeto é contido em um único script para facilitar a execução e o entendi
 
 ```bash
 selecao-features-ag/
-├── main.py      # Script principal com toda a lógica do AG
-└── README.md    # Esta documentação
+├── main.py      
+└── README.md   
 ```
 
 ## 🚀 Como Rodar o Projeto
@@ -48,25 +43,7 @@ selecao-features-ag/
 * **Python** (versão 3.8 ou superior)
 * **pip** (gerenciador de pacotes do Python)
 
-#### **1. Configuração do Ambiente**
-
-É recomendado o uso de um ambiente virtual (`venv`) para isolar as dependências.
-
-```bash
-# Crie um ambiente virtual
-python -m venv venv
-
-# Ative o ambiente virtual
-# No Windows:
-.\venv\Scripts\activate
-# No macOS/Linux:
-source venv/bin/activate
-
-# Instale as dependências
-pip install numpy
-```
-
-#### **2. Executando a Aplicação**
+#### **Executando a Aplicação**
 
 Este projeto **não requer um arquivo de dados externo**, pois opera com um dataset e uma função de fitness simulados para focar na mecânica do algoritmo.
 
@@ -75,58 +52,33 @@ Com o ambiente ativado, execute o seguinte comando no terminal:
 ```bash
 python main.py
 ```
+## 👨‍💻 Estudantes
 
-#### **Saída Esperada**
-
-Ao final da execução, o terminal exibirá um resultado similar a este:
-
-```
-Iniciando otimização...
-Geração 10/50 | Melhor Fitness: 0.2815 | Features: 8
-Geração 20/50 | Melhor Fitness: 0.2601 | Features: 7
-Geração 30/50 | Melhor Fitness: 0.2455 | Features: 5
-Geração 40/50 | Melhor Fitness: 0.2455 | Features: 5
-Geração 50/50 | Melhor Fitness: 0.2455 | Features: 5
-
---- Resultado Final ---
-Melhor subconjunto de features: [0 1 0 0 1 0 ... 1 0 1 0 1]
-Número de features selecionadas: 5
-Fitness final: 0.2455
-```
-
-## 🔧 De Simulação para Aplicação Real
-
-Para adaptar este projeto a um problema real, a principal mudança ocorre na função `calcular_fitness`. Em vez de simular a acurácia, você deve treiná-la e avaliá-la usando um modelo de Machine Learning real.
-
-A lógica seria a seguinte:
-
-```python
-# Exemplo de como a função fitness seria em um caso real
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import accuracy_score
-
-def calcular_fitness_real(individuo, dataset, labels):
-    indices_ativos = [i for i, bit in enumerate(individuo) if bit == 1]
-    
-    if len(indices_ativos) == 0:
-        return float('inf')
-
-    # 1. Selecionar apenas as features ativas
-    X_selecionado = dataset[:, indices_ativos]
-
-    # 2. Dividir os dados
-    X_train, X_test, y_train, y_test = train_test_split(X_selecionado, labels, test_size=0.3, stratify=labels)
-
-    # 3. Treinar e avaliar o modelo
-    model = RandomForestClassifier(n_estimators=50)
-    model.fit(X_train, y_train)
-    acuracia_real = accuracy_score(y_test, model.predict(X_test))
-
-    # 4. Calcular o fitness com a acurácia real
-    proporcao_usada = len(indices_ativos) / len(individuo)
-    penalidade = proporcao_usada * 0.2
-    fitness = (1 - acuracia_real) + penalidade
-    
-    return fitness
-```
+<table>
+  <tr>
+    <td align="center">
+      <a href="#">
+        <img src="https://avatars.githubusercontent.com/u/165969703?v=4" width="100px;" alt="Iraê"/><br>
+        <sub>
+          <b>Iraê Ervin Gruber da Silva</b>
+        </sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="#">
+        <img src="https://avatars.githubusercontent.com/u/165967253?s=96&v=4" width="100px;" alt="Jefferson"/><br>
+        <sub>
+          <b>Jefferson Alan Schmidt Ludwig</b>
+        </sub>
+      </a>
+    </td>
+    <td align="center">
+      <a href="#">
+        <img src="https://avatars.githubusercontent.com/u/166339825?v=4" width="100px;" alt="Lucas"/><br>
+        <sub>
+          <b>Lucas Maciel Delvalle Kesler</b>
+        </sub>
+      </a>
+    </td>
+  </tr>
+</table>
