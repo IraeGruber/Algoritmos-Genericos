@@ -13,7 +13,7 @@ TAMANHO_TORNEIO = 3
 NUM_ELITE = 2
 
 # ==========================================
-# Função de Fitness (com comentários para implementação real)
+# Função de Fitness
 # ==========================================
 def calcular_fitness(individuo, dataset, labels):
     indices_ativos = [i for i, bit in enumerate(individuo) if bit == 1]
